@@ -2,3 +2,4 @@ openai
 python-dotenv
 pandas
 matplotlib
+flyte==2.0.0b25
