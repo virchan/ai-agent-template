@@ -52,7 +52,7 @@ env = base_env
 # )
 
 
-@base_env.task
+@env.task
 @agent("planner")
 async def planner_agent(user_request: str) -> PlannerDecision:
     """
