@@ -2,6 +2,8 @@ from utils.decorators import tool
 from ddgs import DDGS
 import flyte
 from typing import Optional
+import httpx
+from bs4 import BeautifulSoup
 
 
 @tool(agent="web_search")
@@ -50,3 +52,61 @@ async def duck_duck_go(
 
     print(f"[DuckDuckGo] Found {len(search_results)} results for: {query}")
     return search_results
+
+
+@tool(agent="web_search")
+@flyte.trace
+async def fetch_webpage(url: str, max_length: int = 5000) -> dict:
+    """
+    Fetch and extract text content from a webpage.
+
+    Args:
+        url (str): The URL of the webpage to fetch.
+        max_length (int): Maximum length of content to return (default: 5000 chars).
+
+    Returns:
+        dict: Dictionary with 'url', 'title', 'content', and 'error' keys.
+    """
+    try:
+        async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as client:
+            response = await client.get(url)
+            response.raise_for_status()
+
+        # Parse HTML content
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        # Remove script and style elements
+        for script in soup(["script", "style", "nav", "footer", "header"]):
+            script.decompose()
+
+        # Get text content
+        title = soup.title.string if soup.title else "No title"
+        text = soup.get_text(separator='\n', strip=True)
+
+        # Truncate if too long
+        if len(text) > max_length:
+            text = text[:max_length] + "... [truncated]"
+
+        print(f"[Fetch Webpage] Successfully fetched {len(text)} chars from: {url}")
+
+        return {
+            "url": url,
+            "title": title,
+            "content": text,
+            "error": ""
+        }
+
+    except httpx.TimeoutException:
+        error_msg = f"Timeout fetching {url}"
+        print(f"[Fetch Webpage] {error_msg}")
+        return {"url": url, "title": "", "content": "", "error": error_msg}
+
+    except httpx.HTTPStatusError as e:
+        error_msg = f"HTTP {e.response.status_code} error for {url}"
+        print(f"[Fetch Webpage] {error_msg}")
+        return {"url": url, "title": "", "content": "", "error": error_msg}
+
+    except Exception as e:
+        error_msg = f"Error fetching {url}: {str(e)}"
+        print(f"[Fetch Webpage] {error_msg}")
+        return {"url": url, "title": "", "content": "", "error": error_msg}

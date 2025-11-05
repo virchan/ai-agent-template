@@ -18,6 +18,11 @@ from config import OPENAI_API_KEY
 from utils.decorators import agent, agent_registry
 from config import base_env
 
+# Import all agents to populate registry (don't need to use them, just import)
+import agents.math_agent
+import agents.string_agent
+import agents.web_search_agent
+
 client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
 # ----------------------------------

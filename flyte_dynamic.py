@@ -20,6 +20,7 @@ sys.path.insert(0, str(project_root))
 from agents.planner_agent import planner_agent, PlannerDecision, AgentStep
 from agents.math_agent import math_agent, MathAgentResult
 from agents.string_agent import string_agent, StringAgentResult
+from agents.web_search_agent import web_search_agent, WebSearchAgentResult
 from config import base_env
 
 # ----------------------------------
@@ -97,6 +98,10 @@ async def execute_dynamic_task(user_request: str) -> TaskResult:
             agent_result = await string_agent(step.task)
             result_summary = agent_result.final_result
             error = agent_result.error
+        elif step.agent == "web_search":
+            agent_result = await web_search_agent(step.task)
+            result_summary = agent_result.final_result
+            error = agent_result.error
         else:
             # Fallback for unknown agent
             print(f"[Orchestrator] WARNING: Unknown agent '{step.agent}'")
@@ -140,11 +145,31 @@ async def execute_dynamic_task(user_request: str) -> TaskResult:
 if __name__ == "__main__":
     # This allows local testing but won't break remote execution
     flyte.init_from_config(".flyte/config.yaml")
+
+    # Test prompts - uncomment the one you want to test:
+
+    # Simple math test
+    # user_request = "Calculate 5 factorial"
+
+    # Simple string test
+    # user_request = "Count the words in 'The quick brown fox jumps over the lazy dog'"
+
+    # Multi-agent test (math + string)
+    # user_request = "Calculate 5 times 3, then count the words in 'Hello World'"
+
+    # Web search test
+    # user_request = "Search for recent news about Flyte workflow orchestration"
+
+    # Complex multi-agent test (all three agents)
+    user_request = "Calculate 10 factorial, count words in 'AI is transforming software', and search for latest Flyte 2.0 features"
+
     execution = flyte.run(
         execute_dynamic_task,
-        user_request="Calculate 5+5 and then count the words in 'Hello World!'"
+        user_request=user_request
     )
 
+    print(f"\n{'='*60}")
     print(f"Execution: {execution.name}")
     print(f"URL: {execution.url}")
     print("Click the link above to view execution details in the Flyte UI 👆")
+    print(f"{'='*60}\n")
