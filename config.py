@@ -4,6 +4,9 @@ import flyte
 
 load_dotenv()
 
+# ----------------------------------
+# Base Task Environment
+# ----------------------------------
 base_env = flyte.TaskEnvironment(
     name="base_env",
     image=flyte.Image.from_debian_base().with_requirements("requirements.txt"),
@@ -14,11 +17,16 @@ base_env = flyte.TaskEnvironment(
     # resources=flyte.Resources(cpu=1, mem="1Gi")
 )
 
-
-# API Keys
+# ----------------------------------
+# Local API Keys
+# ----------------------------------
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 assert OPENAI_API_KEY is not None, "❌ OPENAI_API_KEY is not set!"
 
+# ----------------------------------
 # Database configuration
+# ----------------------------------
 
+# ----------------------------------
 # logging configuration
+# ----------------------------------
