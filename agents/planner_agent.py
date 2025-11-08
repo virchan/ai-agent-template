@@ -83,35 +83,46 @@ async def planner_agent(user_request: str) -> PlannerDecision:
     available_agents = [a for a in agent_registry if a != "planner"]
     agent_list = "\n".join([f"- {a}" for a in available_agents])
 
-    system_msg = (
-        f"You are a routing agent.\nAvailable agents:\n{agent_list}\n\n"
-        f"Recent memory:\n{context}\n\n"
-        f"Analyze the user's request and decide which agent(s) to use.\n\n"
-        f"DEPENDENCIES: Use 'dependencies' to specify which steps must complete before this step.\n"
-        f"- dependencies is a list of step indices (0-indexed)\n"
-        f"- Empty list [] means the step can run immediately (no dependencies)\n"
-        f"- Steps with no dependencies can run in PARALLEL\n"
-        f"- Steps with dependencies will wait for those steps to complete\n\n"
-        f"Examples:\n\n"
-        f"INDEPENDENT TASKS (can run in parallel):\n"
-        f"{{\"steps\": [\n"
-        f"  {{\"agent\": \"math\", \"task\": \"Calculate 5 factorial\", \"dependencies\": []}},\n"
-        f"  {{\"agent\": \"string\", \"task\": \"Count words in 'Hello World'\", \"dependencies\": []}},\n"
-        f"  {{\"agent\": \"web_search\", \"task\": \"Search for Python tutorials\", \"dependencies\": []}}\n"
-        f"]}}\n\n"
-        f"DEPENDENT TASKS (step 1 must complete before step 2):\n"
-        f"{{\"steps\": [\n"
-        f"  {{\"agent\": \"math\", \"task\": \"Calculate 5 times 3\", \"dependencies\": []}},\n"
-        f"  {{\"agent\": \"math\", \"task\": \"Add 10 to the previous result\", \"dependencies\": [0]}}\n"
-        f"]}}\n\n"
-        f"MIXED (steps 0 and 1 run in parallel, step 2 waits for both):\n"
-        f"{{\"steps\": [\n"
-        f"  {{\"agent\": \"math\", \"task\": \"Calculate 5 factorial\", \"dependencies\": []}},\n"
-        f"  {{\"agent\": \"string\", \"task\": \"Count letters in 'test'\", \"dependencies\": []}},\n"
-        f"  {{\"agent\": \"code\", \"task\": \"Combine the results\", \"dependencies\": [0, 1]}}\n"
-        f"]}}\n\n"
-        f"IMPORTANT: Always include 'dependencies' field for each step, even if empty []."
-    )
+    system_msg = f"""
+You are a routing agent.
+Available agents:
+{agent_list}
+
+Recent memory:
+{context}
+
+Analyze the user's request and decide which agent(s) to use.
+
+DEPENDENCIES: Use 'dependencies' to specify which steps must complete before this step.
+- dependencies is a list of step indices (0-indexed)
+- Empty list [] means the step can run immediately (no dependencies)
+- Steps with no dependencies can run in PARALLEL
+- Steps with dependencies will wait for those steps to complete
+
+Examples:
+
+INDEPENDENT TASKS (can run in parallel):
+{{"steps": [
+  {{"agent": "math", "task": "Calculate 5 factorial", "dependencies": []}},
+  {{"agent": "string", "task": "Count words in 'Hello World'", "dependencies": []}},
+  {{"agent": "web_search", "task": "Search for Python tutorials", "dependencies": []}}
+]}}
+
+DEPENDENT TASKS (step 1 must complete before step 2):
+{{"steps": [
+  {{"agent": "math", "task": "Calculate 5 times 3", "dependencies": []}},
+  {{"agent": "math", "task": "Add 10 to the previous result", "dependencies": [0]}}
+]}}
+
+MIXED (steps 0 and 1 run in parallel, step 2 waits for both):
+{{"steps": [
+  {{"agent": "math", "task": "Calculate 5 factorial", "dependencies": []}},
+  {{"agent": "string", "task": "Count letters in 'test'", "dependencies": []}},
+  {{"agent": "code", "task": "Combine the results", "dependencies": [0, 1]}}
+]}}
+
+IMPORTANT: Always include 'dependencies' field for each step, even if empty [].
+"""
 
     res = await client.chat.completions.create(
         model="gpt-4",
