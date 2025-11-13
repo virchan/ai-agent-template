@@ -5,7 +5,9 @@ from typing import Optional
 import httpx
 from bs4 import BeautifulSoup
 
-
+# ----------------------------------
+# DuckDuckGo Search Tool
+# ----------------------------------
 @tool(agent="web_search")
 @flyte.trace
 async def duck_duck_go(
@@ -53,7 +55,9 @@ async def duck_duck_go(
     print(f"[DuckDuckGo] Found {len(search_results)} results for: {query}")
     return search_results
 
-
+# ----------------------------------
+# Webpage Fetching Tool
+# ----------------------------------
 @tool(agent="web_search")
 @flyte.trace
 async def fetch_webpage(url: str, max_length: int = 5000) -> dict:

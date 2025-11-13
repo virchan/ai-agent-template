@@ -23,6 +23,7 @@ from agents.math_agent import math_agent, MathAgentResult
 from agents.string_agent import string_agent, StringAgentResult
 from agents.web_search_agent import web_search_agent, WebSearchAgentResult
 from agents.code_agent import code_agent, CodeAgentResult
+from agents.weather_agent import weather_agent, WeatherAgentResult
 from config import base_env
 
 # ----------------------------------
@@ -146,6 +147,10 @@ async def execute_dynamic_task(user_request: str) -> TaskResult:
                 agent_result = await code_agent(task)
                 result_summary = agent_result.final_result
                 error = agent_result.error
+            elif step.agent == "weather":
+                agent_result = await weather_agent(task)
+                result_summary = agent_result.final_result
+                error = agent_result.error
             else:
                 # Fallback for unknown agent
                 print(f"[Orchestrator] WARNING: Unknown agent '{step.agent}'")
@@ -242,6 +247,9 @@ if __name__ == "__main__":
 
     # Code execution test
     # user_request = "Write Python code to calculate the first 10 Fibonacci numbers"
+
+    # Weather test
+    user_request = "What's the weather like in Tokyo?"
 
     # Parallel execution test (independent tasks)
     # user_request = "Calculate 10 factorial, count words in 'AI is transforming software', and search for latest Flyte 2.0 features"

@@ -1,6 +1,8 @@
 import httpx
 import flyte
+from utils.decorators import tool
 
+@tool(agent="weather")
 @flyte.trace
 async def get_weather(location: str) -> dict:
     """
