@@ -237,7 +237,7 @@ if __name__ == "__main__":
     # user_request = "Calculate 5 times 3, then count the words in 'Hello World'"
 
     # Simple dependency test (math only)
-    user_request = "Calculate 2 plus 3 and 5 plus 6, then add those two results together"
+    # user_request = "Calculate 2 plus 3 and 5 plus 6, then add those two results together"
 
     # Math and string parallel + dependency test
     # user_request = "Calculate 10 times 5 and count words in 'Hello World', then multiply the word count by the calculation result"
@@ -249,16 +249,16 @@ if __name__ == "__main__":
     # user_request = "Write Python code to calculate the first 10 Fibonacci numbers"
 
     # Weather test
-    user_request = "What's the weather like in Tokyo?"
+    # user_request = "What's the weather like in Tokyo?"
 
     # Parallel execution test (independent tasks)
     # user_request = "Calculate 10 factorial, count words in 'AI is transforming software', and search for latest Flyte 2.0 features"
 
     # Complex test with all agents
-    # user_request = """"Calculate 5 factorial, 10 times 10, count words in 'hello world',
-    #   count letters in 'test', search for 'Python async', search for 'Flyte workflows',
-    #   calculate 3 plus 7, count words in 'agent orchestration system', then write Python
-    #   code to sum all the numeric results and concatenate all the text results"""
+    user_request = """"Calculate 5 factorial, 10 times 10, count words in 'hello world',
+      count letters in 'test', search for 'Python async', search for 'Flyte workflows',
+      calculate 3 plus 7, count words in 'agent orchestration system', then write Python
+      code to sum all the numeric results and concatenate all the text results"""
 
     # Mixed parallel + dependencies test (math and string)
     # user_request = "Calculate 5 factorial and count letters in 'hello', then multiply those two results together"

@@ -13,3 +13,11 @@ flyte create config \
     --builder remote \
     --domain development \
     --project flytesnacks
+
+
+
+
+python -m workflows.flyte_dynamic --local
+python -m workflows.flyte_dynamic
+
+python -m workflows.flyte_sequential

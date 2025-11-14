@@ -10,9 +10,9 @@ from openai import AsyncOpenAI
 from dataclasses import dataclass
 from typing import List
 
-# Add project root to path for imports
-project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
+# # Add project root to path for imports
+# project_root = Path(__file__).parent.parent
+# sys.path.insert(0, str(project_root))
 
 from config import OPENAI_API_KEY
 from utils.decorators import agent, agent_registry
