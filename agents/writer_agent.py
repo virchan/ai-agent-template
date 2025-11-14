@@ -2,22 +2,20 @@
 This module defines the writer_agent, which can create written content based on research.
 """
 
-import json
 import sys
 from pathlib import Path
 import flyte
+from openai import AsyncOpenAI
 
 # Add project root to path for imports
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-# Import tools to register them
-import tools.writing_tools
-
-from utils.decorators import agent, agent_tools
-from utils.plan_executor import execute_plan
+from utils.decorators import agent
 from dataclasses import dataclass
-from config import base_env
+from config import base_env, OPENAI_API_KEY
+
+client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
 # ----------------------------------
 # Data Models
@@ -27,7 +25,6 @@ from config import base_env
 class WriterAgentResult:
     """Result from writer agent execution"""
     final_result: str
-    steps: str  # JSON string of steps taken
     error: str = ""  # Empty if no error
 
 
@@ -41,46 +38,49 @@ env = base_env
 @agent("writer")
 async def writer_agent(task: str) -> WriterAgentResult:
     """
-    Writer agent that creates content based on research and requirements.
+    Writer agent that creates written content based on research and requirements.
+    Uses LLM directly to generate content without intermediate tools.
 
     Args:
-        task (str): The writing task to perform.
+        task (str): The writing task to perform (should include research context).
 
     Returns:
-        WriterAgentResult: The written content and the steps taken.
+        WriterAgentResult: The written content.
     """
     print(f"[Writer Agent] Processing: {task}")
 
-    toolset = agent_tools["writer"]
-    tool_list = "\n".join([f"{name}: {fn.__doc__.strip()}" for name, fn in toolset.items()])
-    system_msg = f"""
-You are a content writing agent. You can create written content based on topics and research.
+    system_msg = """
+You are a professional content writer. Your job is to create well-structured, engaging content based on the research provided.
 
-Tools:
-{tool_list}
+Write clear, informative content that:
+- Has a compelling title (using # for markdown)
+- Is well-organized with sections (using ## for subheadings)
+- Synthesizes the research into coherent paragraphs
+- Is approximately 200-400 words
+- Uses proper markdown formatting
 
-CRITICAL: You must respond with ONLY a valid JSON array, nothing else. No markdown, no explanations.
-Return a JSON array of tool calls in this exact format:
-[
-  {{"tool": "write_content", "args": ["AI and Machine Learning", "Research context here...", 300], "reasoning": "Creating initial content draft based on research"}}
-]
-
-RULES:
-1. Start your response with [ and end with ]
-2. No markdown code blocks (no ```)
-3. No extra text before or after the JSON
-4. Always include a "reasoning" field for each step
-5. Use write_content to create the main content
-6. Use add_section to add additional sections if needed
+Return ONLY the written content, no preamble or explanation.
 """
 
-    memory_log = []  # No memory persistence for now
-    result = await execute_plan(task, agent="writer", system_msg=system_msg)
+    try:
+        response = await client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": system_msg},
+                {"role": "user", "content": task}
+            ]
+        )
 
-    print(f"[Writer Agent] Result: {result}")
+        content = response.choices[0].message.content
+        print(f"[Writer Agent] Generated {len(content)} characters of content")
 
-    return WriterAgentResult(
-        final_result=str(result.get("final_result", "")),
-        steps=json.dumps(result.get("steps", [])),
-        error=result.get("error", "")
-    )
+        return WriterAgentResult(
+            final_result=content,
+            error=""
+        )
+    except Exception as e:
+        print(f"[Writer Agent] Error: {str(e)}")
+        return WriterAgentResult(
+            final_result="",
+            error=str(e)
+        )
