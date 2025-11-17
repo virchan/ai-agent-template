@@ -3,8 +3,6 @@ This module defines the web_search_agent, which can search the web and fetch con
 """
 
 import json
-import sys
-from pathlib import Path
 import flyte
 from openai import AsyncOpenAI
 
@@ -20,8 +18,8 @@ from config import base_env, OPENAI_API_KEY
 # Agent-Specific Configuration
 # ----------------------------------
 WEB_SEARCH_AGENT_CONFIG = {
-    "model": "gpt-4o",        # Needs good reasoning for search queries
-    "temperature": 0.3,       # Slight creativity for search terms
+    "model": "gpt-4o",
+    "temperature": 0.3,
     "max_tokens": 1000,
 }
 

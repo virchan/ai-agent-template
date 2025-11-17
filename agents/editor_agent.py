@@ -2,14 +2,21 @@
 This module defines the editor_agent, which can review and improve written content.
 """
 
-import sys
-from pathlib import Path
 import flyte
 from openai import AsyncOpenAI
 
 from utils.decorators import agent
 from dataclasses import dataclass
 from config import base_env, OPENAI_API_KEY
+
+# ----------------------------------
+# Agent-Specific Configuration
+# ----------------------------------
+EDITOR_AGENT_CONFIG = {
+    "model": "gpt-4o",
+    "temperature": 0.5, 
+    "max_tokens": 1500,
+}
 
 client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
@@ -65,7 +72,9 @@ Return ONLY the improved content, no commentary or explanation about changes.
 
     try:
         response = await client.chat.completions.create(
-            model="gpt-4",
+            model=EDITOR_AGENT_CONFIG["model"],
+            temperature=EDITOR_AGENT_CONFIG["temperature"],
+            max_tokens=EDITOR_AGENT_CONFIG["max_tokens"],
             messages=[
                 {"role": "system", "content": system_msg},
                 {"role": "user", "content": task}

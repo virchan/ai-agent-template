@@ -3,8 +3,6 @@ This module defines the math_agent, which is responsible for solving arithmetic,
 """
 
 import json
-import sys
-from pathlib import Path
 import flyte
 from openai import AsyncOpenAI
 
@@ -20,8 +18,8 @@ from config import base_env, OPENAI_API_KEY
 # Agent-Specific Configuration
 # ----------------------------------
 MATH_AGENT_CONFIG = {
-    "model": "gpt-4o-mini",  # Simple arithmetic doesn't need full GPT-4
-    "temperature": 0.0,       # Deterministic for math
+    "model": "gpt-4o-mini",
+    "temperature": 0.0,
     "max_tokens": 500,
 }
 

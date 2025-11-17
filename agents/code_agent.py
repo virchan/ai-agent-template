@@ -3,8 +3,6 @@ This module defines the code_agent, which can write and execute Python code.
 """
 
 import json
-import sys
-from pathlib import Path
 import flyte
 from openai import AsyncOpenAI
 
@@ -20,8 +18,8 @@ from config import base_env, OPENAI_API_KEY
 # Agent-Specific Configuration
 # ----------------------------------
 CODE_AGENT_CONFIG = {
-    "model": "gpt-4o",        # Needs reasoning for code generation
-    "temperature": 0.2,       # Low but not zero for creative solutions
+    "model": "gpt-4o",
+    "temperature": 0.2,
     "max_tokens": 1500,
 }
 

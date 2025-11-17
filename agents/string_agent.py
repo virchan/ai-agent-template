@@ -3,8 +3,6 @@ This module defines the string_agent, which is responsible for string analysis a
 """
 
 import json
-import sys
-from pathlib import Path
 import flyte
 from openai import AsyncOpenAI
 
@@ -20,8 +18,8 @@ from config import base_env, OPENAI_API_KEY
 # Agent-Specific Configuration
 # ----------------------------------
 STRING_AGENT_CONFIG = {
-    "model": "gpt-4o-mini",  # Text counting is simple
-    "temperature": 0.0,       # Deterministic
+    "model": "gpt-4o-mini",
+    "temperature": 0.0,
     "max_tokens": 300,
 }
 
@@ -35,8 +33,8 @@ client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 class StringAgentResult:
     """Result from string agent execution"""
     final_result: str
-    steps: str  # JSON string of steps taken
-    error: str = ""  # Empty if no error
+    steps: str 
+    error: str = "" 
 
 
 # ----------------------------------

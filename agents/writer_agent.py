@@ -2,14 +2,21 @@
 This module defines the writer_agent, which can create written content based on research.
 """
 
-import sys
-from pathlib import Path
 import flyte
 from openai import AsyncOpenAI
 
 from utils.decorators import agent
 from dataclasses import dataclass
 from config import base_env, OPENAI_API_KEY
+
+# ----------------------------------
+# Agent-Specific Configuration
+# ----------------------------------
+WRITER_AGENT_CONFIG = {
+    "model": "gpt-4o",
+    "temperature": 0.7,
+    "max_tokens": 1500,
+}
 
 client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
@@ -60,7 +67,9 @@ Return ONLY the written content, no preamble or explanation.
 
     try:
         response = await client.chat.completions.create(
-            model="gpt-4",
+            model=WRITER_AGENT_CONFIG["model"],
+            temperature=WRITER_AGENT_CONFIG["temperature"],
+            max_tokens=WRITER_AGENT_CONFIG["max_tokens"],
             messages=[
                 {"role": "system", "content": system_msg},
                 {"role": "user", "content": task}

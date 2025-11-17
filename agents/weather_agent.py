@@ -3,8 +3,6 @@ This module defines the weather_agent, which can get weather information for loc
 """
 
 import json
-import sys
-from pathlib import Path
 import flyte
 from openai import AsyncOpenAI
 
@@ -20,8 +18,8 @@ from config import base_env, OPENAI_API_KEY
 # Agent-Specific Configuration
 # ----------------------------------
 WEATHER_AGENT_CONFIG = {
-    "model": "gpt-4o-mini",  # Simple weather queries
-    "temperature": 0.0,       # Deterministic
+    "model": "gpt-4o-mini",
+    "temperature": 0.0,
     "max_tokens": 300,
 }
 
