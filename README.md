@@ -146,6 +146,9 @@ python -m workflows.flyte_dynamic --local --request "How many words in 'The quic
 
 # Weather
 python -m workflows.flyte_dynamic --local --request "What's the weather in London?"
+
+# complex multi-task execution with parallelism, dependency management, and context passing
+python -m workflows.flyte_dynamic --local --request "Calculate 5 factorial, 10 times 10, count words in 'hello world', count letters in 'test', search for 'Python async', search for 'Flyte workflows', calculate 3 plus 7, count words in 'agent orchestration system', then write Python code to sum all the numeric results and concatenate all the text results"
 ```
 
 **Multi-Agent Tasks:**
