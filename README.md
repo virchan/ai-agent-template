@@ -468,9 +468,9 @@ logger = Logger(path="agent_trace_log.jsonl", verbose=True)
 
 Ideas for enhancements:
 
-- [ ] Add more agents (database, file operations, API calls)
+- [ ] Add more agent types (database, file operations, API calls)
 - [ ] Implement retry logic with exponential backoff
-- [ ] Add streaming output for long-running tasks
+- [ ] Better Structured Outputs (OpenAI, BAML, Instructor)
 - [ ] Create a web UI for workflow visualization
 - [ ] Support other LLM providers (Anthropic, Gemini)
 - [ ] Add caching for repeated tool calls
