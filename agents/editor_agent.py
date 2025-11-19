@@ -14,11 +14,9 @@ from config import base_env, OPENAI_API_KEY
 # ----------------------------------
 EDITOR_AGENT_CONFIG = {
     "model": "gpt-4o",
-    "temperature": 0.5, 
+    "temperature": 0.5,
     "max_tokens": 1500,
 }
-
-client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
 # ----------------------------------
 # Data Models
@@ -51,6 +49,9 @@ async def editor_agent(task: str) -> EditorAgentResult:
         EditorAgentResult: The improved content.
     """
     print(f"[Editor Agent] Processing: {task}")
+
+    # Initialize client inside task for Flyte secret injection
+    client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
     system_msg = """
 You are a professional content editor. Your job is to review and improve written content.

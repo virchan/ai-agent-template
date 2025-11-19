@@ -23,8 +23,6 @@ STRING_AGENT_CONFIG = {
     "max_tokens": 300,
 }
 
-client = AsyncOpenAI(api_key=OPENAI_API_KEY)
-
 # ----------------------------------
 # Data Models
 # ----------------------------------
@@ -65,6 +63,9 @@ async def string_agent(task: str) -> StringAgentResult:
         StringAgentResult: The result of the analysis and the steps taken.
     """
     print(f"[String Agent] Processing: {task}")
+
+    # Initialize client inside task for Flyte secret injection
+    client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
     # Build system message with available tools
     toolset = agent_tools["string"]

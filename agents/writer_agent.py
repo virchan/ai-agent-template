@@ -18,8 +18,6 @@ WRITER_AGENT_CONFIG = {
     "max_tokens": 1500,
 }
 
-client = AsyncOpenAI(api_key=OPENAI_API_KEY)
-
 # ----------------------------------
 # Data Models
 # ----------------------------------
@@ -51,6 +49,9 @@ async def writer_agent(task: str) -> WriterAgentResult:
         WriterAgentResult: The written content.
     """
     print(f"[Writer Agent] Processing: {task}")
+
+    # Initialize client inside task for Flyte secret injection
+    client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
     system_msg = """
 You are a professional content writer. Your job is to create well-structured, engaging content based on the research provided.

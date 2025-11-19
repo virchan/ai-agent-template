@@ -23,8 +23,6 @@ WEATHER_AGENT_CONFIG = {
     "max_tokens": 300,
 }
 
-client = AsyncOpenAI(api_key=OPENAI_API_KEY)
-
 # ----------------------------------
 # Data Models
 # ----------------------------------
@@ -63,6 +61,9 @@ async def weather_agent(task: str) -> WeatherAgentResult:
         WeatherAgentResult: The result of the weather query and the steps taken.
     """
     print(f"[Weather Agent] Processing: {task}")
+
+    # Initialize client inside task for Flyte secret injection
+    client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
     toolset = agent_tools["weather"]
     tool_list = "\n".join([f"{name}: {fn.__doc__.strip()}" for name, fn in toolset.items()])

@@ -24,8 +24,6 @@ WEB_SEARCH_AGENT_CONFIG = {
     "max_tokens": 1000,
 }
 
-client = AsyncOpenAI(api_key=OPENAI_API_KEY)
-
 # ----------------------------------
 # Data Models
 # ----------------------------------
@@ -65,6 +63,9 @@ async def web_search_agent(task: str) -> WebSearchAgentResult:
         WebSearchAgentResult: The result of the search and the steps taken.
     """
     print(f"[Web Search Agent] Processing: {task}")
+
+    # Initialize client inside task for Flyte secret injection
+    client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
     toolset = agent_tools["web_search"]
     tool_list = "\n".join([f"{name}: {fn.__doc__.strip()}" for name, fn in toolset.items()])

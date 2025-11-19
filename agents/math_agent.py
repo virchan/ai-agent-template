@@ -23,8 +23,6 @@ MATH_AGENT_CONFIG = {
     "max_tokens": 500,
 }
 
-client = AsyncOpenAI(api_key=OPENAI_API_KEY)
-
 # ----------------------------------
 # Data Models
 # ----------------------------------
@@ -65,6 +63,9 @@ async def math_agent(task: str) -> MathAgentResult:
         MathAgentResult: The result of the computation and the steps taken.
     """
     print(f"[Math Agent] Processing: {task}")
+
+    # Initialize client inside task for Flyte secret injection
+    client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
     # Build system message with available tools
     toolset = agent_tools["math"]

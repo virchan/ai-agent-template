@@ -23,8 +23,6 @@ CODE_AGENT_CONFIG = {
     "max_tokens": 1500,
 }
 
-client = AsyncOpenAI(api_key=OPENAI_API_KEY)
-
 # ----------------------------------
 # Data Models
 # ----------------------------------
@@ -63,6 +61,9 @@ async def code_agent(task: str) -> CodeAgentResult:
         CodeAgentResult: The result of code execution and the steps taken.
     """
     print(f"[Code Agent] Processing: {task}")
+
+    # Initialize client inside task for Flyte secret injection
+    client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
     toolset = agent_tools["code"]
     tool_list = "\n".join([f"{name}: {fn.__doc__.strip()}" for name, fn in toolset.items()])

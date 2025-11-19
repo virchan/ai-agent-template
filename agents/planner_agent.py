@@ -18,8 +18,6 @@ import agents.web_search_agent
 import agents.code_agent
 import agents.weather_agent
 
-client = AsyncOpenAI(api_key=OPENAI_API_KEY)
-
 # ----------------------------------
 # Data Models
 # ----------------------------------
@@ -71,6 +69,9 @@ async def planner_agent(user_request: str) -> PlannerDecision:
         PlannerDecision: Plan with one or more agent steps.
     """
     print(f"[Planner Agent] Processing request: {user_request}")
+
+    # Initialize client inside task for Flyte secret injection
+    client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
     memory_log = []  # No memory persistence for now
     context = "\n".join([f"- {q} → {r}" for q, r in memory_log[-5:]]) or "No history."

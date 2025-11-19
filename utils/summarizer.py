@@ -5,8 +5,6 @@ Smart context summarization utility using LLM when needed.
 from openai import AsyncOpenAI
 from config import OPENAI_API_KEY
 
-client = AsyncOpenAI(api_key=OPENAI_API_KEY)
-
 # Configuration
 SUMMARIZER_CONFIG = {
     "model": "gpt-4o-mini",  # Cheap and fast for summarization
@@ -36,6 +34,9 @@ async def smart_summarize(text: str, context: str = "general") -> str:
         return text
 
     print(f"[Summarizer] Input length: {len(text)} chars, using LLM summarization...")
+
+    # Initialize client inside function for Flyte secret injection
+    client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
     # Build context-specific prompt
     if context == "web_search":
